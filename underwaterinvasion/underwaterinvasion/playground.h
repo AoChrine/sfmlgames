@@ -6,6 +6,8 @@ using namespace sf;
 
 class playground {
 private:
+	Sprite background;
+	View CameraView;
 
 
 

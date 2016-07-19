@@ -13,8 +13,8 @@ private:
 	Text playButton;
 	Text quitButton;
 	Text restartButton;
-	bool playSelected = false;
-	bool restartSelected = false;
+	bool playSelected = true;
+	bool restartSelected = true;
 public:
 
 	Menu();
@@ -22,11 +22,11 @@ public:
 	void setFont(String fontLocation);
 	void setString(String TitleString);
 	
-	void getMenuTitle();
-	void getRestartTitle();
-	void getPlayButton();
-	void getQuitButton();
-	void getRestartButoon();
+	Text getMenuTitle();
+	Text getRestartTitle();
+	Text getPlayButton();
+	Text getQuitButton();
+	Text getRestartButton();
 
 	bool getPlaySelected();
 	bool getRestartSelected();

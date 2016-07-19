@@ -1,2 +1,10 @@
-﻿  main.cpp
+﻿  stdafx.cpp
+  main.cpp
+  submarine.cpp
+  playground.cpp
+  menu.cpp
+  fueltank.cpp
+  enemyship.cpp
+  bigenemyship.cpp
+  Generating Code...
   underwaterinvasion.vcxproj -> C:\Users\aou\Documents\Visual Studio 2015\Projects\sfmlgames\underwaterinvasion\Debug\underwaterinvasion.exe
