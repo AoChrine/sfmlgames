@@ -1,5 +1,5 @@
 ﻿  main.cpp
-c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(66): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(133): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(192): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(78): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(94): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(221): warning C4305: 'argument': truncation from 'double' to 'float'
   underwaterinvasion.vcxproj -> C:\Users\aou\Documents\Visual Studio 2015\Projects\sfmlgames\underwaterinvasion\Debug\underwaterinvasion.exe
