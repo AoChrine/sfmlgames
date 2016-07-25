@@ -63,12 +63,20 @@ int main()
 		cout << "could not load sub texture" << endl;
 	}
 
+	sf::Texture eShipTexture;
+	if (!eShipTexture.loadFromFile("enemyshipsprite.png")) {
+		cout << "could not load eship texture" << endl;
+	}
+
 	/*
 	Init obj. for game
 	*/
 
-	Sub mySub(50, 100, subTexture);
+	Sub mySub(50, 100);
 	mySub.setTexture("subsprite.png");
+
+	enemyShip eship(100, 100);
+	eship.setTexture("enemyshipsprite.png");
 
 	vector<sf::RectangleShape> groundVec;
 	fillGroundVector(groundVec);
@@ -122,6 +130,9 @@ int main()
 
 		//Game state to control Game
 		if (state == gameState::game) {
+			if (Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				eship.moveUp();
+			}
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -142,12 +153,14 @@ int main()
 
 			mySub.update();
 			cout << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
+			eship.update();
 
 			window.clear(Color::Black);
 			for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
 				window.draw(*it);
 			}
 			window.draw(mySub.getSprite());
+			window.draw(eship.get_eShipSprite());
 		}
 		window.display();
 	}

@@ -5,12 +5,10 @@
 
 
 
-Sub::Sub(float x, float y, sf::Texture subTexture)
+Sub::Sub(float x, float y)
 {
 	subPosition.x = x;
 	subPosition.y = y;
-
-	subSprite.setTexture(subTexture);
 	subSprite.setPosition(subPosition);
 }
 

@@ -18,7 +18,7 @@ private:
 	
 public:
 
-	Sub(float x, float y, sf::Texture subTexture);
+	Sub(float x, float y);
 	sf::FloatRect getSubCoord();
 	sf::Sprite getSprite();
 	float getSubRailSpd();
