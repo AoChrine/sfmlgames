@@ -68,6 +68,11 @@ int main()
 		cout << "could not load eship texture" << endl;
 	}
 
+	sf::Texture eBigShipTexture;
+	if (!eBigShipTexture.loadFromFile("enemybigshipsprite.png")) {
+		cout << "could not load big enemy ship texture" << endl;
+	}
+
 	/*
 	Init obj. for game
 	*/
@@ -77,6 +82,9 @@ int main()
 
 	enemyShip eship(100, 100);
 	eship.setTexture("enemyshipsprite.png");
+
+	bigEnemyShip ebigship(300, 500);
+	ebigship.setTexture("enemybigshipsprite.png");
 
 	vector<sf::RectangleShape> groundVec;
 	fillGroundVector(groundVec);
@@ -161,6 +169,7 @@ int main()
 			}
 			window.draw(mySub.getSprite());
 			window.draw(eship.get_eShipSprite());
+			window.draw(ebigship.get_eBigShipSprite());
 		}
 		window.display();
 	}
@@ -176,7 +185,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 	//DEFINE MAX GROUND HEIGHT
 	sf::RectangleShape constraintRectTop(sf::Vector2f(30000, 10));
 	constraintRectTop.setFillColor(Color::White);
-	constraintRectTop.setPosition(sf::Vector2f(0, 400));
+	constraintRectTop.setPosition(sf::Vector2f(0, 500));
 
 	
 	//Define min ground height
@@ -248,4 +257,8 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 		// Push rect into vector
 		groundVec.push_back(groundrecttoadd);
 	}
+}
+
+void fillEnemyShip(const vector<sf::RectangleShape> &groundvec) {
+
 }
