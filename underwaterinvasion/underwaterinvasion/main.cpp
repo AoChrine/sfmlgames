@@ -17,9 +17,11 @@
 
 using namespace std;
 
-#define PI 3.14159265
+const float PI = 3.14159265f;
+
 
 void fillGroundVector(vector<sf::RectangleShape> &groundVec);
+void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip> &enemyShipVec, vector<bigEnemyShip> &bigEnemyShipVec, vector<fuelTank> &ftankVec);
 
 int main()
 {
@@ -58,21 +60,6 @@ int main()
 	Font font;
 	font.loadFromFile("font.ttf");
 
-	sf::Texture subTexture;
-	if (!subTexture.loadFromFile("subsprite.png")) {
-		cout << "could not load sub texture" << endl;
-	}
-
-	sf::Texture eShipTexture;
-	if (!eShipTexture.loadFromFile("enemyshipsprite.png")) {
-		cout << "could not load eship texture" << endl;
-	}
-
-	sf::Texture eBigShipTexture;
-	if (!eBigShipTexture.loadFromFile("enemybigshipsprite.png")) {
-		cout << "could not load big enemy ship texture" << endl;
-	}
-
 	/*
 	Init obj. for game
 	*/
@@ -80,17 +67,26 @@ int main()
 	Sub mySub(50, 100);
 	mySub.setTexture("subsprite.png");
 
-	enemyShip eship(100, 100);
-	eship.setTexture("enemyshipsprite.png");
-
-	bigEnemyShip ebigship(300, 500);
-	ebigship.setTexture("enemybigshipsprite.png");
-
 	vector<sf::RectangleShape> groundVec;
 	fillGroundVector(groundVec);
 
+	vector<enemyShip> enemyShipVec;
+	vector<bigEnemyShip> bigEnemyShipVec;
+	vector<fuelTank> fuelVec;
+	fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
+
+	for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
+		it->setTexture("enemyshipsprite.png");
+	}
+	for (vector<bigEnemyShip>::iterator it = bigEnemyShipVec.begin(); it != bigEnemyShipVec.end(); ++it) {
+		it->setTexture("enemybigshipsprite.png");
+	}
+	for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
+		it->setTexture("fueltanksprite.png");
+	}
+
 	sf::View view;
-	view.reset(sf::FloatRect(0, 0, windowWidth, windowHeight));
+	view.reset(sf::FloatRect(0.0f, 0.0f, (float)windowWidth, (float)windowHeight));
 	view.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
 	sf::Vector2f position(0, 0);
 
@@ -108,7 +104,7 @@ int main()
 			position.y = 0;
 		}
 
-		view.reset(sf::FloatRect(position.x, position.y, windowWidth, windowHeight));
+		view.reset(sf::FloatRect(position.x, position.y, (float)windowWidth, (float)windowHeight));
 		window.setView(view);
 
 
@@ -138,9 +134,7 @@ int main()
 
 		//Game state to control Game
 		if (state == gameState::game) {
-			if (Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				eship.moveUp();
-			}
+
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -155,21 +149,55 @@ int main()
 			}
 			for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
 				if (it->getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
-					cout << "colliding!" << endl;
+					cout << "colliding with ground" << endl;
 				}
 			}
+			for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
+				
 
+				if (abs(it->get_eShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 200) {
+					//cout << "true time to move up" << endl;
+					it->setMoveUp();
+				}
+
+				if (it->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+					cout << "collide with small ship" << endl;
+				}
+
+				it->update();
+			}
+			for (vector<bigEnemyShip>::iterator it = bigEnemyShipVec.begin(); it != bigEnemyShipVec.end(); ++it) {
+				if (it->get_eBigShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+					cout << "collide with big ship" << endl;
+				}
+			}
+			for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
+				if (it->getTankSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+					cout << "collide with fuel" << endl;
+				}
+			}
+			
 			mySub.update();
-			cout << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
-			eship.update();
-
+			//cout << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
 			window.clear(Color::Black);
+
+			window.draw(mySub.getSprite());
+
 			for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
 				window.draw(*it);
 			}
-			window.draw(mySub.getSprite());
-			window.draw(eship.get_eShipSprite());
-			window.draw(ebigship.get_eBigShipSprite());
+			for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
+				if (it->getNoDraw() == false) {
+					window.draw(it->get_eShipSprite());
+				}
+			}
+			for (vector<bigEnemyShip>::iterator it = bigEnemyShipVec.begin(); it != bigEnemyShipVec.end(); ++it) {
+				window.draw(it->get_eBigShipSprite());
+			}
+			for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
+				window.draw(it->getTankSprite());
+			}
+		
 		}
 		window.display();
 	}
@@ -195,8 +223,8 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 
 	
 	// Variables to make the ground
-	float normOffset = 100;
-	float smallOffSet = 100 * cosf(PI / 4);
+	float normOffset = 128.0f;
+	float smallOffSet = 128 * cosf(PI / 4);
 	bool hitbotconstraint = false;
 	bool hittopconstraint = false;
 	sf::Vector2f groundpos;
@@ -208,11 +236,11 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 
 	for (int i = 0; i < 400; i++) {
 		sf::RectangleShape groundrecttoadd;
-		groundrecttoadd.setSize(sf::Vector2f(100, 1));
+		groundrecttoadd.setSize(sf::Vector2f(128, 1));
 		groundrecttoadd.setPosition(sf::Vector2f(groundpos.x, groundpos.y));
 		groundrecttoadd.setFillColor(Color::Red);
 
-		int randnum = (rand() % 3); // rand num between 0 and 2
+		int randnum = (rand() % 4); // rand num between 0 and 3
 
 		// Sets position for next rectangle if prev rec points down
 		if (randnum == 0 && !hitbotconstraint) {
@@ -229,7 +257,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 			hitbotconstraint = false;
 		}
 		// Sets position for next rect if prev rect is flat
-		else if (randnum == 2) {
+		else if (randnum == 2 || randnum == 3) {
 			groundpos.x += normOffset;
 		}
 		// If next rect points down but is at min ground height, make next one point up	
@@ -259,6 +287,50 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 	}
 }
 
-void fillEnemyShip(const vector<sf::RectangleShape> &groundvec) {
+/*
+Function to fill vector with objects to draw on ground
+*/
+void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip> &enemyShipVec, vector<bigEnemyShip> &bigEnemyShipVec, vector<fuelTank> &ftankVec) {
 
+	srand(1);
+
+	for (vector<sf::RectangleShape>::const_iterator it = groundvec.begin(); it != groundvec.end(); ++it) {
+
+		if (it->getRotation() == 0) {
+
+			float recPosX = it->getPosition().x;
+			float recPosY = it->getPosition().y;
+
+			int randnum = (rand() % 5); // num between 0 and 4
+			int randnum2 = (rand() % 5);
+
+			if (randnum == 0 || randnum == 1 || randnum == 2) {
+				enemyShip eShip(recPosX, recPosY - 32);
+				enemyShipVec.push_back(eShip);
+			}
+			else if (randnum == 3) {
+				bigEnemyShip bigEShip(recPosX, recPosY - 64);
+				bigEnemyShipVec.push_back(bigEShip);
+			}
+			else if (randnum == 4) {
+				fuelTank ftank(recPosX, recPosY - 32);
+				ftankVec.push_back(ftank);
+			}
+
+			if (randnum2 == 0 || randnum2 == 1 || randnum2 == 2) {
+				enemyShip eShip(recPosX+64, recPosY - 32);
+				enemyShipVec.push_back(eShip);
+			}
+			else if (randnum2 == 3) {
+				bigEnemyShip bigEShip(recPosX+64, recPosY - 64);
+				bigEnemyShipVec.push_back(bigEShip);
+			}
+			else if (randnum2 == 4) {
+				fuelTank ftank(recPosX+64, recPosY - 32);
+				ftankVec.push_back(ftank);
+			}
+	
+
+		}
+	}
 }

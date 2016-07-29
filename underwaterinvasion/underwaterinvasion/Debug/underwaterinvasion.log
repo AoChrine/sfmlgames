@@ -1,8 +1,6 @@
-﻿  submarine.cpp
+﻿  enemyship.cpp
+  Generating Code...
+  Compiling...
   main.cpp
-c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(93): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(111): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(199): warning C4305: 'argument': truncation from 'double' to 'float'
-  bigenemyship.cpp
   Generating Code...
   underwaterinvasion.vcxproj -> C:\Users\aou\Documents\Visual Studio 2015\Projects\sfmlgames\underwaterinvasion\Debug\underwaterinvasion.exe

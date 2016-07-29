@@ -8,7 +8,8 @@ private:
 	sf::Vector2f eShipPosition;
 	sf::Texture eShipTexture;
 	sf::Sprite eShipSprite;
-	float moveUpSpeed = 0.5f;
+	float moveUpSpeed = 1.0f;
+	bool moveUpVar = false;
 	bool noDraw = false;
 
 
@@ -18,10 +19,15 @@ public:
 	sf::FloatRect get_eShipCoord();
 	sf::Sprite get_eShipSprite();
 
+	sf::Vector2f getEShipPos();
+
 	void setTexture(string fileloc);
 	void setNoDraw();
 	void moveUp();
 	void setColor();
+	void setMoveUp();
+	bool getNoDraw();
+
 
 	void update();
 
