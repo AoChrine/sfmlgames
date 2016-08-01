@@ -151,18 +151,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bigenemyship.h" />
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="enemyship.h" />
     <ClInclude Include="fueltank.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="missile.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="submarine.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bigenemyship.cpp" />
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="enemyship.cpp" />
     <ClCompile Include="fueltank.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="missile.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

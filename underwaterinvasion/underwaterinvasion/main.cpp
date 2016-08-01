@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "bigenemyship.h"
+#include "missile.h"
+#include "bullet.h"
 #include "enemyship.h"
 #include "fueltank.h"
 #include "menu.h"
@@ -12,6 +14,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
+#include <list>
 #include <stdio.h>
 #include <math.h>
 
@@ -24,8 +27,8 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec);
 void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip> &enemyShipVec, vector<bigEnemyShip> &bigEnemyShipVec, vector<fuelTank> &ftankVec);
 
 int main()
-{
-	
+{	
+	Bullet testBul(500, 500);
 	/*
 	Init window
 	*/
@@ -73,6 +76,7 @@ int main()
 	vector<enemyShip> enemyShipVec;
 	vector<bigEnemyShip> bigEnemyShipVec;
 	vector<fuelTank> fuelVec;
+	list<Bullet> bulletList;
 	fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
 
 	for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
@@ -90,8 +94,11 @@ int main()
 	view.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
 	sf::Vector2f position(0, 0);
 
+
+
 	while (window.isOpen())
 	{
+
 		/*
 		Set up the scrolling view
 		*/
@@ -103,9 +110,10 @@ int main()
 		if (position.y < 0) {
 			position.y = 0;
 		}
-
+	
 		view.reset(sf::FloatRect(position.x, position.y, (float)windowWidth, (float)windowHeight));
 		window.setView(view);
+		
 
 
 		// Close window
@@ -134,7 +142,11 @@ int main()
 
 		//Game state to control Game
 		if (state == gameState::game) {
+			if (Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				Bullet bullet(mySub.getSprite().getPosition().x + 64, mySub.getSprite().getPosition().y + 20);
+				bulletList.push_back(bullet);
 
+			}
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -176,6 +188,21 @@ int main()
 					cout << "collide with fuel" << endl;
 				}
 			}
+			list<Bullet>::iterator it = bulletList.begin();
+			while (it != bulletList.end()) {
+				if (it->getNoDraw() == true) {
+					bulletList.erase(it++);
+				}
+				else {
+					it->update();
+					if (it->getBulletSprite().getPosition().x > mySub.getSprite().getPosition().x + 1200) {
+						it->setNoDraw();
+					}
+				}
+			}
+
+			cout << "list size " << bulletList.size() << endl;
+
 			
 			mySub.update();
 			//cout << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
@@ -197,6 +224,10 @@ int main()
 			for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
 				window.draw(it->getTankSprite());
 			}
+			for (list<Bullet>::iterator it = bulletList.begin(); it != bulletList.end(); ++it) {
+				window.draw(it->getBulletSprite());
+			}
+			
 		
 		}
 		window.display();
