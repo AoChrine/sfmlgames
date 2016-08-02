@@ -234,8 +234,9 @@ int main()
 			vector<Bullet*>::iterator it = bulletVec.begin();
 			while (it != bulletVec.end()) {
 				if ((*it)->getNoDraw() == true) {
+					delete *it;
 					it = bulletVec.erase(it);
-					delete (*it)--;
+					
 				}
 				else {
 					(*it)->update();
