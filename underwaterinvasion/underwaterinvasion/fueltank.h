@@ -26,6 +26,8 @@ public:
 	void setColor();
 	void setRotation(float angle);
 	void setPosition(float x, float y);
+
+	bool getNoDraw();
 	
 
 	void update();

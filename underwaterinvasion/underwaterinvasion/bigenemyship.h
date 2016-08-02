@@ -19,6 +19,7 @@ public:
 	void setTexture(string fileloc);
 	void setNoDraw();
 	void setColor();
+	bool getNoDraw();
 
 	void update();
 };

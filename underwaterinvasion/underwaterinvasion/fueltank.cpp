@@ -59,3 +59,7 @@ void fuelTank::setPosition(float x, float y) {
 	tankPosition.y = y;
 	tankSprite.setPosition(tankPosition);
 }
+
+bool fuelTank::getNoDraw() {
+	return noDraw;
+}

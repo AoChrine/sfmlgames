@@ -25,10 +25,11 @@ const float PI = 3.14159265f;
 
 void fillGroundVector(vector<sf::RectangleShape> &groundVec);
 void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip> &enemyShipVec, vector<bigEnemyShip> &bigEnemyShipVec, vector<fuelTank> &ftankVec);
+void fillBulletVec(vector<Bullet*> &bulletVec, Sub mySub);
 
 int main()
 {	
-	Bullet testBul(500, 500);
+	
 	/*
 	Init window
 	*/
@@ -63,6 +64,9 @@ int main()
 	Font font;
 	font.loadFromFile("font.ttf");
 
+	Texture bulletTexture;
+	if(!bulletTexture.loadFromFile("bullet.png")) return -1;
+
 	/*
 	Init obj. for game
 	*/
@@ -76,7 +80,7 @@ int main()
 	vector<enemyShip> enemyShipVec;
 	vector<bigEnemyShip> bigEnemyShipVec;
 	vector<fuelTank> fuelVec;
-	list<Bullet> bulletList;
+	vector<Bullet*> bulletVec;
 	fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
 
 	for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
@@ -93,7 +97,6 @@ int main()
 	view.reset(sf::FloatRect(0.0f, 0.0f, (float)windowWidth, (float)windowHeight));
 	view.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
 	sf::Vector2f position(0, 0);
-
 
 
 	while (window.isOpen())
@@ -122,6 +125,11 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (state == gameState::game) {
+				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
+					fillBulletVec(bulletVec, mySub);
+				}
+			}
 		}
 
 		//Game state to control Main Menu
@@ -142,11 +150,6 @@ int main()
 
 		//Game state to control Game
 		if (state == gameState::game) {
-			if (Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				Bullet bullet(mySub.getSprite().getPosition().x + 64, mySub.getSprite().getPosition().y + 20);
-				bulletList.push_back(bullet);
-
-			}
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -159,76 +162,94 @@ int main()
 			if (Keyboard::isKeyPressed(sf::Keyboard::W)) {
 				mySub.moveUp();
 			}
-			for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
-				if (it->getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
-					cout << "colliding with ground" << endl;
-				}
-			}
-			for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
-				
-
-				if (abs(it->get_eShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 200) {
-					//cout << "true time to move up" << endl;
-					it->setMoveUp();
-				}
-
-				if (it->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
-					cout << "collide with small ship" << endl;
-				}
-
-				it->update();
-			}
-			for (vector<bigEnemyShip>::iterator it = bigEnemyShipVec.begin(); it != bigEnemyShipVec.end(); ++it) {
-				if (it->get_eBigShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
-					cout << "collide with big ship" << endl;
-				}
-			}
-			for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
-				if (it->getTankSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
-					cout << "collide with fuel" << endl;
-				}
-			}
-			list<Bullet>::iterator it = bulletList.begin();
-			while (it != bulletList.end()) {
-				if (it->getNoDraw() == true) {
-					bulletList.erase(it++);
-				}
-				else {
-					it->update();
-					if (it->getBulletSprite().getPosition().x > mySub.getSprite().getPosition().x + 1200) {
-						it->setNoDraw();
-					}
-				}
-			}
-
-			cout << "list size " << bulletList.size() << endl;
-
-			
 			mySub.update();
-			//cout << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
+
 			window.clear(Color::Black);
 
 			window.draw(mySub.getSprite());
 
-			for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
-				window.draw(*it);
-			}
-			for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
-				if (it->getNoDraw() == false) {
-					window.draw(it->get_eShipSprite());
+			vector<sf::RectangleShape>::iterator itG = groundVec.begin();
+			while (itG != groundVec.end()) {
+				if (itG->getPosition().x < mySub.getSprite().getPosition().x - 1200) {
+					itG = groundVec.erase(itG);
+				}
+				else {
+					//itBE->update();
+					// if collide wwith bullet set nodraw to true
+					window.draw(*itG);
+					itG++;
 				}
 			}
-			for (vector<bigEnemyShip>::iterator it = bigEnemyShipVec.begin(); it != bigEnemyShipVec.end(); ++it) {
-				window.draw(it->get_eBigShipSprite());
+
+
+			vector<enemyShip>::iterator itE = enemyShipVec.begin();
+			while (itE != enemyShipVec.end()) {
+				if (itE->getNoDraw() == true) {
+					itE = enemyShipVec.erase(itE);
+				}
+				else {
+					if (itE->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+						cout << "collide with small ship" << endl;
+					}
+					if (abs(itE->get_eShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 200) {
+						//cout << "true time to move up" << endl;
+						itE->setMoveUp();
+					}
+					itE->update();
+					// if collide wwith bullet set nodraw to true
+					window.draw(itE->get_eShipSprite());
+					itE++;
+				}
 			}
-			for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
-				window.draw(it->getTankSprite());
+
+
+			vector<bigEnemyShip>::iterator itBE = bigEnemyShipVec.begin();
+			while (itBE != bigEnemyShipVec.end()) {
+				if (itBE->getNoDraw() == true) {
+					itBE = bigEnemyShipVec.erase(itBE);
+				}
+				else {
+					//itBE->update();
+					// if collide wwith bullet set nodraw to true
+					window.draw(itBE->get_eBigShipSprite());
+					itBE++;
+				}
 			}
-			for (list<Bullet>::iterator it = bulletList.begin(); it != bulletList.end(); ++it) {
-				window.draw(it->getBulletSprite());
+
+
+			vector<fuelTank>::iterator itF = fuelVec.begin();
+			while (itF != fuelVec.end()) {
+				if (itF->getNoDraw() == true) {
+					itF = fuelVec.erase(itF);
+				}
+				else {
+					itF->update();
+					// if collide wwith bullet set nodraw to true
+					window.draw(itF->getTankSprite());
+					itF++;
+				}
 			}
-			
-		
+
+
+			vector<Bullet*>::iterator it = bulletVec.begin();
+			while (it != bulletVec.end()) {
+				if ((*it)->getNoDraw() == true) {
+					it = bulletVec.erase(it);
+					delete (*it)--;
+				}
+				else {
+					(*it)->update();
+					if ((*it)->getBulletSprite().getPosition().x > mySub.getSprite().getPosition().x + 1200) {
+						(*it)->setNoDraw();
+					}
+					window.draw((*it)->getBulletSprite());
+					it++;
+				}
+			}
+
+			cout << "list size " << bulletVec.size() << endl;	
+			cout << "enemyship size " << enemyShipVec.size() << endl;
+			cout << "ground size " << groundVec.size() << endl;
 		}
 		window.display();
 	}
@@ -364,4 +385,14 @@ void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip
 
 		}
 	}
+}
+
+/*
+Function to fill bulletList with bullet when we press space
+*/
+void fillBulletVec(vector<Bullet*> &bulletVec, Sub mySub) {
+		float bulletPosX = mySub.getSprite().getPosition().x + 64;
+		float bulletPosY = mySub.getSprite().getPosition().y + 20;
+		Bullet* newBullet = new Bullet(bulletPosX, bulletPosY);
+		bulletVec.push_back(newBullet);
 }

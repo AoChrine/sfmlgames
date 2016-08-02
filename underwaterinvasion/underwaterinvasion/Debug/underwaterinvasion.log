@@ -1,2 +1,18 @@
-﻿  main.cpp
-  underwaterinvasion.vcxproj -> C:\Users\aou\Documents\Visual Studio 2015\Projects\sfmlgames\underwaterinvasion\Debug\underwaterinvasion.exe
+﻿  stdafx.cpp
+  main.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\main.cpp(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  submarine.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\submarine.h(2): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
+  missile.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\missile.h(2): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
+  menu.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\menu.h(3): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
+  fueltank.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\fueltank.h(2): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
+  enemyship.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\enemyship.h(2): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
+  bullet.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\bullet.h(2): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
+  bigenemyship.cpp
+c:\users\aou\documents\visual studio 2015\projects\sfmlgames\underwaterinvasion\underwaterinvasion\bigenemyship.h(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  Generating Code...

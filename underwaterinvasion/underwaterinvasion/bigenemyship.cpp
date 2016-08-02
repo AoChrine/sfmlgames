@@ -37,6 +37,11 @@ void bigEnemyShip::setColor()
 	eBigShipSprite.setColor(sf::Color::Red);
 }
 
+bool bigEnemyShip::getNoDraw()
+{
+	return noDraw;
+}
+
 void bigEnemyShip::update()
 {
 

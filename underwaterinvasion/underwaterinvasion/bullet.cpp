@@ -6,10 +6,9 @@ Bullet::Bullet(float x, float y)
 	bulletPosition.x = x;
 	bulletPosition.y = y;
 
-	bulletSprite.setRadius(5);
-	bulletSprite.setFillColor(sf::Color::White);
+	bulletTexture.loadFromFile("bullet.png");
+	bulletSprite.setTexture(bulletTexture);
 	bulletSprite.setPosition(bulletPosition);
-	
 }
 
 sf::FloatRect Bullet::getBulletCoord()
@@ -17,7 +16,7 @@ sf::FloatRect Bullet::getBulletCoord()
 	return bulletSprite.getGlobalBounds();
 }
 
-sf::CircleShape Bullet::getBulletSprite()
+sf::Sprite Bullet::getBulletSprite()
 {
 	return bulletSprite;
 }
@@ -43,9 +42,14 @@ void Bullet::update()
 	bulletPosition.x += moveRightSpd;
 
 	bulletLifeTime += 1;
-	if (bulletLifeTime > 40000) {
+	if (bulletLifeTime > 30000) {
 		noDraw = true;
 	}
 
 	bulletSprite.setPosition(bulletPosition);
+}
+
+void Bullet::setTexture(sf::Texture texture)
+{
+	bulletSprite.setTexture(texture);
 }
