@@ -26,6 +26,7 @@ const float PI = 3.14159265f;
 void fillGroundVector(vector<sf::RectangleShape> &groundVec);
 void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip> &enemyShipVec, vector<bigEnemyShip> &bigEnemyShipVec, vector<fuelTank> &ftankVec);
 void fillBulletVec(vector<Bullet*> &bulletVec, Sub mySub);
+void fillMissileVec(vector<Missile*> &missileVec, Sub mySub);
 
 int main()
 {	
@@ -64,8 +65,8 @@ int main()
 	Font font;
 	font.loadFromFile("font.ttf");
 
-	Texture bulletTexture;
-	if(!bulletTexture.loadFromFile("bullet.png")) return -1;
+	//Texture bulletTexture;
+	//if(!bulletTexture.loadFromFile("bullet.png")) return -1;
 
 	/*
 	Init obj. for game
@@ -81,6 +82,7 @@ int main()
 	vector<bigEnemyShip> bigEnemyShipVec;
 	vector<fuelTank> fuelVec;
 	vector<Bullet*> bulletVec;
+	vector<Missile*> missileVec;
 	fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
 
 	for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
@@ -126,8 +128,11 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 			if (state == gameState::game) {
-				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
+				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::J) {
 					fillBulletVec(bulletVec, mySub);
+				}
+				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
+					fillMissileVec(missileVec, mySub);
 				}
 			}
 		}
@@ -150,6 +155,7 @@ int main()
 
 		//Game state to control Game
 		if (state == gameState::game) {
+			std::srand(1);
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -170,12 +176,28 @@ int main()
 
 			vector<sf::RectangleShape>::iterator itG = groundVec.begin();
 			while (itG != groundVec.end()) {
+				if (abs(itG->getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
+					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
+						if (itG->getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
+							(*it)->setNoDraw();
+						}
+					}
+					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
+						if (itG->getGlobalBounds().intersects((*it)->getMissileSprite().getGlobalBounds())) {
+							(*it)->setNoDraw();
+						}
+					}
+					if (itG->getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+						// sub lose one life and move ship up to center
+					}
+
+				}
 				if (itG->getPosition().x < mySub.getSprite().getPosition().x - 1200) {
 					itG = groundVec.erase(itG);
 				}
 				else {
 					//itBE->update();
-					// if collide wwith bullet set nodraw to true
+					
 					window.draw(*itG);
 					itG++;
 				}
@@ -184,6 +206,27 @@ int main()
 
 			vector<enemyShip>::iterator itE = enemyShipVec.begin();
 			while (itE != enemyShipVec.end()) {
+				if (abs(itE->getEShipPos().x - mySub.getSprite().getPosition().x) <= 1200) {
+					// check collision with bullet and missile and if collide set nodraw
+					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
+						if (itE->get_eShipSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
+							itE->setNoDraw();
+							(*it)->setNoDraw();
+							// add score for hitting enemy ship
+						}
+					}
+					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
+						if (itE->get_eShipSprite().getGlobalBounds().intersects((*it)->getMissileSprite().getGlobalBounds())) {
+							itE->setNoDraw();
+							(*it)->setNoDraw();
+							// add score for hitting enemy ship
+						}
+					}
+					if (itE->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+						// sub lose one life and move ship up to center
+						itE->setNoDraw();
+					}
+				}
 				if (itE->getNoDraw() == true) {
 					itE = enemyShipVec.erase(itE);
 				}
@@ -193,10 +236,12 @@ int main()
 					}
 					if (abs(itE->get_eShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 200) {
 						//cout << "true time to move up" << endl;
-						itE->setMoveUp();
+						int randnum = (rand() % 2);
+						if (randnum == 0) {
+							itE->setMoveUp();
+						}
 					}
 					itE->update();
-					// if collide wwith bullet set nodraw to true
 					window.draw(itE->get_eShipSprite());
 					itE++;
 				}
@@ -205,12 +250,33 @@ int main()
 
 			vector<bigEnemyShip>::iterator itBE = bigEnemyShipVec.begin();
 			while (itBE != bigEnemyShipVec.end()) {
+				if (abs(itBE->get_eBigShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
+					// check collision with bullet and missile and if collide set nodraw
+					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
+						if (itBE->get_eBigShipSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
+							itBE->setNoDraw();
+							(*it)->setNoDraw();
+							// add score for hitting enemy ship
+						}
+					}
+					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
+						if (itBE->get_eBigShipSprite().getGlobalBounds().intersects((*it)->getMissileSprite().getGlobalBounds())) {
+							itBE->setNoDraw();
+							(*it)->setNoDraw();
+							// add score for hitting enemy ship
+						}
+					}
+					if (itBE->get_eBigShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+						// sub lose one life and move ship up to center
+						itBE->setNoDraw();
+					}
+				}
+
 				if (itBE->getNoDraw() == true) {
 					itBE = bigEnemyShipVec.erase(itBE);
 				}
 				else {
 					//itBE->update();
-					// if collide wwith bullet set nodraw to true
 					window.draw(itBE->get_eBigShipSprite());
 					itBE++;
 				}
@@ -219,6 +285,29 @@ int main()
 
 			vector<fuelTank>::iterator itF = fuelVec.begin();
 			while (itF != fuelVec.end()) {
+				if (abs(itF->getTankSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
+					// check collision with bullet and missile and if collide set nodraw
+					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
+						if (itF->getTankSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
+							itF->setNoDraw();
+							(*it)->setNoDraw();
+							// add score for hitting enemy ship
+						}
+					}
+					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
+						if (itF->getTankSprite().getGlobalBounds().intersects((*it)->getMissileSprite().getGlobalBounds())) {
+							itF->setNoDraw();
+							(*it)->setNoDraw();
+							// add score for hitting enemy ship
+						}
+					}
+					if (itF->getTankSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
+						// sub lose one life and move ship up to center
+						// ..... maybe ship add a life if meele gas tank?
+						itF->setNoDraw();
+					}
+				}
+
 				if (itF->getNoDraw() == true) {
 					itF = fuelVec.erase(itF);
 				}
@@ -229,7 +318,6 @@ int main()
 					itF++;
 				}
 			}
-
 
 			vector<Bullet*>::iterator it = bulletVec.begin();
 			while (it != bulletVec.end()) {
@@ -248,9 +336,25 @@ int main()
 				}
 			}
 
-			cout << "list size " << bulletVec.size() << endl;	
+			vector<Missile*>::iterator itM = missileVec.begin();
+			while (itM != missileVec.end()) {
+				if ((*itM)->getNoDraw() == true) {
+					delete *itM;
+					itM = missileVec.erase(itM);
+
+				}
+				else {
+					(*itM)->update();
+					// nodraw is collide wtih ground
+					window.draw((*itM)->getMissileSprite());
+					itM++;
+				}
+			}
+
+			cout << "bullet size " << bulletVec.size() << endl;	
 			cout << "enemyship size " << enemyShipVec.size() << endl;
 			cout << "ground size " << groundVec.size() << endl;
+			cout << "missile size " << missileVec.size() << endl;
 		}
 		window.display();
 	}
@@ -285,7 +389,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 	groundpos.y = 550;
 
 	// Seed rng so we have fixed field geometry
-	srand(1);
+	std::srand(1);
 
 	for (int i = 0; i < 400; i++) {
 		sf::RectangleShape groundrecttoadd;
@@ -345,7 +449,7 @@ Function to fill vector with objects to draw on ground
 */
 void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip> &enemyShipVec, vector<bigEnemyShip> &bigEnemyShipVec, vector<fuelTank> &ftankVec) {
 
-	srand(1);
+	std::srand(1);
 
 	for (vector<sf::RectangleShape>::const_iterator it = groundvec.begin(); it != groundvec.end(); ++it) {
 
@@ -389,11 +493,22 @@ void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip
 }
 
 /*
-Function to fill bulletList with bullet when we press space
+Function to fill bulletList with bullet when we press J
 */
 void fillBulletVec(vector<Bullet*> &bulletVec, Sub mySub) {
 		float bulletPosX = mySub.getSprite().getPosition().x + 64;
 		float bulletPosY = mySub.getSprite().getPosition().y + 20;
 		Bullet* newBullet = new Bullet(bulletPosX, bulletPosY);
 		bulletVec.push_back(newBullet);
+}
+
+
+/*
+Function to fill missileVec with missile when we press K
+*/
+void fillMissileVec(vector<Missile*> &missileVec, Sub mySub) {
+	float missilePosX = mySub.getSprite().getPosition().x + 32;
+	float missilePosY = mySub.getSprite().getPosition().y + 30;
+	Missile* newMissile = new Missile(missilePosX, missilePosY);
+	missileVec.push_back(newMissile);
 }

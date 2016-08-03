@@ -6,6 +6,9 @@ Missile::Missile(float x, float y)
 	missilePosition.x = x;
 	missilePosition.y = y;
 
+
+	missileTexture.loadFromFile("bomb.png");
+	missileSprite.setTexture(missileTexture);
 	missileSprite.setPosition(missilePosition);
 }
 
@@ -19,12 +22,11 @@ sf::Sprite Missile::getMissileSprite()
 	return missileSprite;
 }
 
-void Missile::setTexture(string fileloc)
+void Missile::setTexture(sf::Texture texture)
 {
-	missileTexture.loadFromFile(fileloc);
-	missileTexture.setSmooth(true);
-	missileSprite.setTexture(missileTexture);
+	missileSprite.setTexture(texture);
 }
+
 
 void Missile::setNoDraw()
 {
@@ -43,6 +45,7 @@ void Missile::moveDown()
 
 void Missile::update()
 {
+	missilePosition.y += moveDownSpd;
 
 	missilePosition.y += moveDownSpd;
 	if (missilePosition.y > 800) {

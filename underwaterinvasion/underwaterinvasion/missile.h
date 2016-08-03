@@ -9,13 +9,14 @@ private:
 	sf::Sprite missileSprite;
 	sf::Texture missileTexture;
 	float moveDownSpd = 1.0f;
+	//float bulletLifeTime = 0.0f;
 	bool noDraw = false;
 public:
 
 	Missile(float x, float y);
 	sf::FloatRect getMissileCoord();
 	sf::Sprite getMissileSprite();
-	void setTexture(string fileloc);
+	void setTexture(sf::Texture texture);
 	void setNoDraw();
 	bool getNoDraw();
 	void moveDown();
