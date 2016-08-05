@@ -42,6 +42,7 @@ void enemyShip::update()
 	}
 
 	if (moveUpVar) {
+		
 		eShipPosition.y -= moveUpSpeed;
 	}
 

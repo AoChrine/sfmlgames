@@ -2,19 +2,27 @@
 #include "submarine.h"
 
 
-
-
-
 Sub::Sub(float x, float y)
 {
 	subPosition.x = x;
 	subPosition.y = y;
 	subSprite.setPosition(subPosition);
+
+	fuelBarPosition.x = 0;
+	fuelBarPosition.y = 50;
+	fuelBar.setSize(sf::Vector2f(400, 20));
+	fuelBar.setFillColor(sf::Color::Green);
+	fuelBar.setPosition(fuelBarPosition);
 }
 
 sf::FloatRect Sub::getSubCoord()
 {
 	return subSprite.getGlobalBounds();
+}
+
+sf::RectangleShape Sub::getFuelBar()
+{
+	return fuelBar;
 }
 
 sf::Sprite Sub::getSprite()
@@ -40,6 +48,28 @@ float Sub::getSubFuelCount()
 float Sub::getSubLifeCount()
 {
 	return subLifeCount;
+}
+
+
+void Sub::changeFuelBarSize(float x, float y)
+{
+	fuelBar.setSize(sf::Vector2f(x, y));
+}
+
+void Sub::changeFuelBarPosition(float x, float y)
+{
+	fuelBarPosition.x = x;
+	fuelBarPosition.y = y;
+}
+
+void Sub::resetSubPos()
+{
+	subPosition.y = 250;
+}
+
+void Sub::addFuel()
+{
+	fuelCount += 50;
 }
 
 void Sub::moveUp()
@@ -98,6 +128,21 @@ void Sub::update()
 		subPosition.x += subRailSpd;
 	}
 
+	if (fuelBar.getSize().x >= 400) {
+		fuelBar.setSize(sf::Vector2f(400, 20));
+	}
+
+	fuelCount -= 0.04;
+	fuelBar.setSize(sf::Vector2f(fuelCount, 20));
+
+	if (fuelBar.getSize().x > 200) {
+		fuelBar.setFillColor(sf::Color::Green);
+	}
+	else if (fuelBar.getSize().x <= 200) {
+		fuelBar.setFillColor(sf::Color::Red);
+	}
+
 	subSprite.setPosition(subPosition);
+	fuelBar.setPosition(fuelBarPosition);
 
 }

@@ -17,6 +17,7 @@
 #include <list>
 #include <stdio.h>
 #include <math.h>
+#include <thread>
 
 using namespace std;
 
@@ -75,6 +76,15 @@ int main()
 	Sub mySub(50, 100);
 	mySub.setTexture("subsprite.png");
 
+	CircleShape lifeONE(50, 50); lifeONE.setRadius(10); lifeONE.setFillColor(sf::Color::Red);
+	CircleShape lifeTWO(80, 50); lifeTWO.setRadius(10); lifeTWO.setFillColor(sf::Color::Red);
+	CircleShape lifeTHREE(110, 50); lifeTHREE.setRadius(10); lifeTHREE.setFillColor(sf::Color::Red);
+
+	vector<sf::CircleShape> lifeVec;
+	lifeVec.push_back(lifeONE);
+	lifeVec.push_back(lifeTWO);
+	lifeVec.push_back(lifeTHREE);
+
 	vector<sf::RectangleShape> groundVec;
 	fillGroundVector(groundVec);
 
@@ -115,12 +125,22 @@ int main()
 		if (position.y < 0) {
 			position.y = 0;
 		}
-	
+
+		mySub.changeFuelBarPosition(position.x + (windowWidth / 2) - 200, position.y+ 50);
+
+		if (lifeVec.size() == 3) {
+			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));
+			lifeVec[1].setPosition(sf::Vector2f(position.x + 150, position.y + 50));
+			lifeVec[2].setPosition(sf::Vector2f(position.x + 200, position.y + 50));
+		}
+		else if (lifeVec.size() == 2) {
+			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));
+			lifeVec[1].setPosition(sf::Vector2f(position.x + 150, position.y + 50));		}		else if (lifeVec.size() == 1) {			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));		}
+
+		cout			<< "pos x " << position.x << ", " << "pos y " << position.y << endl;
 		view.reset(sf::FloatRect(position.x, position.y, (float)windowWidth, (float)windowHeight));
 		window.setView(view);
 		
-
-
 		// Close window
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -173,6 +193,10 @@ int main()
 			window.clear(Color::Black);
 
 			window.draw(mySub.getSprite());
+			window.draw(mySub.getFuelBar());
+			for (vector<sf::CircleShape>::iterator it = lifeVec.begin(); it != lifeVec.end(); ++it) {
+				window.draw(*it);
+			}
 
 			vector<sf::RectangleShape>::iterator itG = groundVec.begin();
 			while (itG != groundVec.end()) {
@@ -189,6 +213,11 @@ int main()
 					}
 					if (itG->getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
 						// sub lose one life and move ship up to center
+						lifeVec.pop_back();
+						mySub.resetSubPos();
+						sleep(sf::seconds (1));
+						
+
 					}
 
 				}
@@ -225,6 +254,11 @@ int main()
 					if (itE->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
 						// sub lose one life and move ship up to center
 						itE->setNoDraw();
+						lifeVec.pop_back();
+						mySub.resetSubPos();
+						sleep(sf::seconds(1));
+					
+						
 					}
 				}
 				if (itE->getNoDraw() == true) {
@@ -269,6 +303,9 @@ int main()
 					if (itBE->get_eBigShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
 						// sub lose one life and move ship up to center
 						itBE->setNoDraw();
+						lifeVec.pop_back();
+						sleep(sf::seconds(1));
+						mySub.resetSubPos();
 					}
 				}
 
@@ -282,7 +319,6 @@ int main()
 				}
 			}
 
-
 			vector<fuelTank>::iterator itF = fuelVec.begin();
 			while (itF != fuelVec.end()) {
 				if (abs(itF->getTankSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
@@ -291,14 +327,15 @@ int main()
 						if (itF->getTankSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
 							itF->setNoDraw();
 							(*it)->setNoDraw();
-							// add score for hitting enemy ship
+							mySub.addFuel();
 						}
 					}
 					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
 						if (itF->getTankSprite().getGlobalBounds().intersects((*it)->getMissileSprite().getGlobalBounds())) {
 							itF->setNoDraw();
 							(*it)->setNoDraw();
-							// add score for hitting enemy ship
+							mySub.addFuel();
+							// add score for hitting fuel
 						}
 					}
 					if (itF->getTankSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
@@ -351,10 +388,10 @@ int main()
 				}
 			}
 
-			cout << "bullet size " << bulletVec.size() << endl;	
-			cout << "enemyship size " << enemyShipVec.size() << endl;
-			cout << "ground size " << groundVec.size() << endl;
-			cout << "missile size " << missileVec.size() << endl;
+			//cout << "bullet size " << bulletVec.size() << endl;	
+			//cout << "enemyship size " << enemyShipVec.size() << endl;
+			//cout << "ground size " << groundVec.size() << endl;
+			//cout << "missile size " << missileVec.size() << endl;
 		}
 		window.display();
 	}
