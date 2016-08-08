@@ -65,6 +65,13 @@ void Sub::changeFuelBarPosition(float x, float y)
 void Sub::resetSubPos()
 {
 	subPosition.y = 250;
+	subPosition.x -= 130;
+}
+
+void Sub::hardResetPos()
+{
+	subPosition.x = 50;
+	subPosition.y = 100;
 }
 
 void Sub::addFuel()
@@ -132,7 +139,7 @@ void Sub::update()
 		fuelBar.setSize(sf::Vector2f(400, 20));
 	}
 
-	fuelCount -= 0.04;
+	fuelCount -= 0.1f;
 	fuelBar.setSize(sf::Vector2f(fuelCount, 20));
 
 	if (fuelBar.getSize().x > 200) {
@@ -140,6 +147,10 @@ void Sub::update()
 	}
 	else if (fuelBar.getSize().x <= 200) {
 		fuelBar.setFillColor(sf::Color::Red);
+	}
+
+	if (fuelBar.getSize().x <= 0) {
+		fuelBar.setSize(sf::Vector2f(0, 20));
 	}
 
 	subSprite.setPosition(subPosition);

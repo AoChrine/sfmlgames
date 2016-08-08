@@ -66,6 +66,17 @@ int main()
 	Font font;
 	font.loadFromFile("font.ttf");
 
+	Text labels;
+	labels.setFont(font);
+	labels.setCharacterSize(30);
+	labels.setColor(sf::Color::White);
+
+	int score = 0;
+
+	String dieString = "Aw! You died. You noob.";
+	stringstream restartString;
+	restartString << "Well done. You win with " << score << " points!";
+
 	//Texture bulletTexture;
 	//if(!bulletTexture.loadFromFile("bullet.png")) return -1;
 
@@ -110,7 +121,7 @@ int main()
 	view.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
 	sf::Vector2f position(0, 0);
 
-
+	std::srand(1);
 	while (window.isOpen())
 	{
 
@@ -135,9 +146,12 @@ int main()
 		}
 		else if (lifeVec.size() == 2) {
 			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));
-			lifeVec[1].setPosition(sf::Vector2f(position.x + 150, position.y + 50));		}		else if (lifeVec.size() == 1) {			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));		}
+			lifeVec[1].setPosition(sf::Vector2f(position.x + 150, position.y + 50));
+		}
+		else if (lifeVec.size() == 1) {
+			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));
+		}
 
-		cout			<< "pos x " << position.x << ", " << "pos y " << position.y << endl;
 		view.reset(sf::FloatRect(position.x, position.y, (float)windowWidth, (float)windowHeight));
 		window.setView(view);
 		
@@ -156,6 +170,11 @@ int main()
 				}
 			}
 		}
+		
+		stringstream scoreString;
+		scoreString << "Score: " << score;
+		labels.setPosition(position.x + 1300, position.y + 50);
+		labels.setString(scoreString.str());
 
 		//Game state to control Main Menu
 		if (state == gameState::mainMenu) {
@@ -171,11 +190,8 @@ int main()
 			window.draw(mainMenu.getMenuTitle());
 			window.draw(mainMenu.getPlayButton());
 			window.draw(mainMenu.getQuitButton());
-		}
-
-		//Game state to control Game
-		if (state == gameState::game) {
-			std::srand(1);
+		}else if (state == gameState::game) {
+			
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -189,11 +205,14 @@ int main()
 				mySub.moveUp();
 			}
 			mySub.update();
+			cout << "sub pos is " << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
 
 			window.clear(Color::Black);
 
 			window.draw(mySub.getSprite());
 			window.draw(mySub.getFuelBar());
+			window.draw(labels);
+
 			for (vector<sf::CircleShape>::iterator it = lifeVec.begin(); it != lifeVec.end(); ++it) {
 				window.draw(*it);
 			}
@@ -215,7 +234,7 @@ int main()
 						// sub lose one life and move ship up to center
 						lifeVec.pop_back();
 						mySub.resetSubPos();
-						sleep(sf::seconds (1));
+						//sleep(sf::seconds (1));
 						
 
 					}
@@ -242,6 +261,7 @@ int main()
 							itE->setNoDraw();
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
+							score += 100;
 						}
 					}
 					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
@@ -249,6 +269,7 @@ int main()
 							itE->setNoDraw();
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
+							score += 100;
 						}
 					}
 					if (itE->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
@@ -256,9 +277,7 @@ int main()
 						itE->setNoDraw();
 						lifeVec.pop_back();
 						mySub.resetSubPos();
-						sleep(sf::seconds(1));
-					
-						
+						//sleep(sf::seconds(1));
 					}
 				}
 				if (itE->getNoDraw() == true) {
@@ -291,6 +310,7 @@ int main()
 							itBE->setNoDraw();
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
+							score += 500;
 						}
 					}
 					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
@@ -298,14 +318,15 @@ int main()
 							itBE->setNoDraw();
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
+							score += 500;
 						}
 					}
 					if (itBE->get_eBigShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
 						// sub lose one life and move ship up to center
 						itBE->setNoDraw();
 						lifeVec.pop_back();
-						sleep(sf::seconds(1));
 						mySub.resetSubPos();
+						//sleep(sf::seconds(1));
 					}
 				}
 
@@ -342,6 +363,7 @@ int main()
 						// sub lose one life and move ship up to center
 						// ..... maybe ship add a life if meele gas tank?
 						itF->setNoDraw();
+						mySub.resetSubPos();
 					}
 				}
 
@@ -387,12 +409,60 @@ int main()
 					itM++;
 				}
 			}
+			
+			if (lifeVec.empty()) {
+				restartMenu.setString(dieString);
+				state = gameState::restartMenu;
+			}
+			// win condition sub goes past visible map
 
-			//cout << "bullet size " << bulletVec.size() << endl;	
-			//cout << "enemyship size " << enemyShipVec.size() << endl;
-			//cout << "ground size " << groundVec.size() << endl;
-			//cout << "missile size " << missileVec.size() << endl;
+		}else if (state == gameState::restartMenu) {
+			
+			if (restartMenu.getRestartSelected() == true && Keyboard::isKeyPressed(Keyboard::Space)) {
+				mySub.hardResetPos();
+				mySub.changeFuelBarPosition(400, 20);
+				score = 0;
+				for (vector<sf::CircleShape>::iterator it = lifeVec.begin(); it != lifeVec.end(); ++it) {
+					lifeVec.pop_back();
+				}
+				lifeVec.push_back(lifeONE);
+				lifeVec.push_back(lifeTWO);
+				lifeVec.push_back(lifeTHREE);
+
+				groundVec.clear();
+				enemyShipVec.clear();
+				bigEnemyShipVec.clear();
+				fuelVec.clear();
+
+				fillGroundVector(groundVec);
+				fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
+
+				for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
+					it->setTexture("enemyshipsprite.png");
+				}
+				for (vector<bigEnemyShip>::iterator it = bigEnemyShipVec.begin(); it != bigEnemyShipVec.end(); ++it) {
+					it->setTexture("enemybigshipsprite.png");
+				}
+				for (vector<fuelTank>::iterator it = fuelVec.begin(); it != fuelVec.end(); ++it) {
+					it->setTexture("fueltanksprite.png");
+				}
+
+				state = gameState::game;
+			}
+			if(restartMenu.getRestartSelected() == false && Keyboard::isKeyPressed(Keyboard::Space)) {
+				window.close();
+
+			}
+			
+			restartMenu.restartUpdate();
+
+			window.clear(Color::Black);
+			window.draw(restartMenu.getRestartTitle());
+			window.draw(restartMenu.getRestartButton());
+			window.draw(restartMenu.getQuitButton());
 		}
+		// put text stuff here
+
 		window.display();
 	}
 

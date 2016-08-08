@@ -30,6 +30,7 @@ public:
 	void changeFuelBarSize(float x, float y);
 	void changeFuelBarPosition(float x, float y);
 	void resetSubPos();
+	void hardResetPos();
 	void addFuel();
 	void moveUp();
 	void moveDown();
