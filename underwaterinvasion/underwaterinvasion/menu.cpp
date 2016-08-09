@@ -3,26 +3,26 @@
 
 Menu::Menu() {
 	
-	menuTitle.setPosition(Vector2f(400, 50));
+	menuTitle.setPosition(Vector2f(500, 50));
 	menuTitle.setCharacterSize(50);
 	menuTitle.setColor(Color::Cyan);
-	menuTitle.setString("OCEAN INVADER!");
+	menuTitle.setString("ScRaMbLe!");
 
-	restartTitle.setPosition(Vector2f(350, 100));
+	//restartTitle.setPosition(Vector2f(350, 100));
 	restartTitle.setCharacterSize(40);
 	restartTitle.setColor(Color::Red);
 
-	playButton.setPosition(Vector2f(550, 200));
+	playButton.setPosition(Vector2f(650, 200));
 	playButton.setCharacterSize(35);
 	playButton.setColor(Color::Yellow);
 	playButton.setString("Play");
 
-	quitButton.setPosition(Vector2f(550, 300));
+	//quitButton.setPosition(Vector2f(550, 300));
 	quitButton.setCharacterSize(35);
 	quitButton.setColor(Color::White);
 	quitButton.setString("Quit");
 
-	restartButton.setPosition(Vector2f(550, 250));
+	//restartButton.setPosition(Vector2f(550, 250));
 	restartButton.setCharacterSize(35);
 	restartButton.setColor(Color::Yellow);
 	restartButton.setString("Restart");
@@ -40,6 +40,24 @@ void Menu::setFont(String fileloc) {
 
 void Menu::setString(String winText) {
 	restartTitle.setString(winText);
+}
+
+void Menu::setQuitButtonPos(float x, float y)
+{
+	quitButtonPos.x = x;
+	quitButtonPos.y = y;
+}
+
+void Menu::setRestartButtonPos(float x, float y)
+{
+	restartButtonPos.x = x;
+	restartButtonPos.y = y;
+}
+
+void Menu::setRestartTitlePos(float x, float y)
+{
+	restartTitlePos.x = x;
+	restartTitlePos.y = y;
 }
 
 Text Menu::getMenuTitle() {
@@ -71,6 +89,7 @@ bool Menu::getRestartSelected() {
 }
 
 void Menu::update() {
+	quitButton.setPosition(quitButtonPos.x, quitButtonPos.y);
 	if (playSelected == true && Keyboard::isKeyPressed(Keyboard::Down)) {
 		playSelected = false;
 		quitButton.setColor(Color::Yellow);
@@ -85,6 +104,10 @@ void Menu::update() {
 }
 
 void Menu::restartUpdate() {
+	quitButton.setPosition(quitButtonPos.x, quitButtonPos.y);
+	restartTitle.setPosition(restartTitlePos.x, restartTitlePos.y);
+	restartButton.setPosition(restartButtonPos.x, restartButtonPos.y);
+
 	if (restartSelected == true && Keyboard::isKeyPressed(Keyboard::Down)) {
 		restartSelected = false;
 		restartButton.setColor(Color::White);

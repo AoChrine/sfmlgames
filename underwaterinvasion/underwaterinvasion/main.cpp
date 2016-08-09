@@ -52,8 +52,9 @@ int main()
 	*/
 	Menu mainMenu;
 	mainMenu.setFont("font.ttf");
+	mainMenu.setQuitButtonPos(650, 300);
 	Menu restartMenu;
-	mainMenu.setFont("font.ttf");
+	restartMenu.setFont("font.ttf");
 
 	/*
 	Load music, font, texture
@@ -62,6 +63,15 @@ int main()
 	if (!mainsong.openFromFile("chill.wav")) return -1;
 	mainsong.setLoop(true);
 	//mainsong.play();
+
+	Texture backgroundTex;
+	backgroundTex.loadFromFile("background.png");
+	backgroundTex.setRepeated(true);
+
+	Sprite background;
+	background.setTexture(backgroundTex);
+	background.setPosition(0, 0);
+	
 
 	Font font;
 	font.loadFromFile("font.ttf");
@@ -138,6 +148,7 @@ int main()
 		}
 
 		mySub.changeFuelBarPosition(position.x + (windowWidth / 2) - 200, position.y+ 50);
+		background.setPosition(position.x, position.y);
 
 		if (lifeVec.size() == 3) {
 			lifeVec[0].setPosition(sf::Vector2f(position.x + 100, position.y + 50));
@@ -190,7 +201,10 @@ int main()
 			window.draw(mainMenu.getMenuTitle());
 			window.draw(mainMenu.getPlayButton());
 			window.draw(mainMenu.getQuitButton());
-		}else if (state == gameState::game) {
+			cout << "menu title pos: " << mainMenu.getMenuTitle().getPosition().x << ", " << mainMenu.getMenuTitle().getPosition().y << endl;
+			cout << "view pos: " << position.x << ", " << position.y << endl;
+		}
+		if (state == gameState::game) {
 			
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
@@ -208,14 +222,15 @@ int main()
 			cout << "sub pos is " << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
 
 			window.clear(Color::Black);
-
-			window.draw(mySub.getSprite());
-			window.draw(mySub.getFuelBar());
-			window.draw(labels);
+			window.draw(background);
 
 			for (vector<sf::CircleShape>::iterator it = lifeVec.begin(); it != lifeVec.end(); ++it) {
 				window.draw(*it);
 			}
+
+			window.draw(mySub.getFuelBar());
+			window.draw(labels);
+			window.draw(mySub.getSprite());
 
 			vector<sf::RectangleShape>::iterator itG = groundVec.begin();
 			while (itG != groundVec.end()) {
@@ -412,11 +427,17 @@ int main()
 			
 			if (lifeVec.empty()) {
 				restartMenu.setString(dieString);
+				mySub.hardResetPos();
 				state = gameState::restartMenu;
 			}
 			// win condition sub goes past visible map
 
-		}else if (state == gameState::restartMenu) {
+		}
+		if (state == gameState::restartMenu) {
+
+			restartMenu.setQuitButtonPos(position.x + (windowWidth / 2) - 100, position.y + 300);
+			restartMenu.setRestartButtonPos(position.x + (windowWidth / 2) - 100, position.y + 200);
+			restartMenu.setRestartTitlePos(position.x + (windowWidth / 2) - 300, position.y + 50);
 			
 			if (restartMenu.getRestartSelected() == true && Keyboard::isKeyPressed(Keyboard::Space)) {
 				mySub.hardResetPos();
@@ -460,6 +481,9 @@ int main()
 			window.draw(restartMenu.getRestartTitle());
 			window.draw(restartMenu.getRestartButton());
 			window.draw(restartMenu.getQuitButton());
+			
+			cout << "restart title pos: " << restartMenu.getRestartTitle().getPosition().x << ", " << restartMenu.getRestartTitle().getPosition().y << endl;
+			cout << "pos: " << position.x << ", " << position.y << endl;
 		}
 		// put text stuff here
 
@@ -502,7 +526,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 		sf::RectangleShape groundrecttoadd;
 		groundrecttoadd.setSize(sf::Vector2f(128, 1));
 		groundrecttoadd.setPosition(sf::Vector2f(groundpos.x, groundpos.y));
-		groundrecttoadd.setFillColor(Color::Red);
+		groundrecttoadd.setFillColor(Color::Black);
 
 		int randnum = (rand() % 4); // rand num between 0 and 3
 
