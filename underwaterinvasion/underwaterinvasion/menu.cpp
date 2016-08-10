@@ -3,7 +3,7 @@
 
 Menu::Menu() {
 	
-	menuTitle.setPosition(Vector2f(500, 50));
+	menuTitle.setPosition(Vector2f(600, 50));
 	menuTitle.setCharacterSize(50);
 	menuTitle.setColor(Color::Cyan);
 	menuTitle.setString("ScRaMbLe!");
@@ -12,7 +12,7 @@ Menu::Menu() {
 	restartTitle.setCharacterSize(40);
 	restartTitle.setColor(Color::Red);
 
-	playButton.setPosition(Vector2f(650, 200));
+	playButton.setPosition(Vector2f(700, 200));
 	playButton.setCharacterSize(35);
 	playButton.setColor(Color::Yellow);
 	playButton.setString("Play");

@@ -52,7 +52,7 @@ int main()
 	*/
 	Menu mainMenu;
 	mainMenu.setFont("font.ttf");
-	mainMenu.setQuitButtonPos(650, 300);
+	mainMenu.setQuitButtonPos(700, 300);
 	Menu restartMenu;
 	restartMenu.setFont("font.ttf");
 
@@ -60,9 +60,20 @@ int main()
 	Load music, font, texture
 	*/
 	Music mainsong;
-	if (!mainsong.openFromFile("chill.wav")) return -1;
+	if (!mainsong.openFromFile("chill.wav")) cout << "error loading main song" << endl;
 	mainsong.setLoop(true);
-	//mainsong.play();
+	mainsong.play();
+
+	SoundBuffer bufferShoot;
+	if (!bufferShoot.loadFromFile("met.wav")) cout << "error loading shoot song" << endl;
+	Sound shootSound;
+	shootSound.setBuffer(bufferShoot);
+
+	SoundBuffer bufferHit;
+	if (!bufferHit.loadFromFile("jump.wav")) cout << "error loading hit song" << endl;;
+	Sound hitSound;
+	hitSound.setBuffer(bufferHit);
+
 
 	Texture backgroundTex;
 	backgroundTex.loadFromFile("background.png");
@@ -71,8 +82,11 @@ int main()
 	Sprite background;
 	background.setTexture(backgroundTex);
 	background.setPosition(0, 0);
-	
 
+	Texture* groundTex = new sf::Texture;
+	groundTex->loadFromFile("ground.png");
+	
+	
 	Font font;
 	font.loadFromFile("font.ttf");
 
@@ -115,6 +129,11 @@ int main()
 	vector<Bullet*> bulletVec;
 	vector<Missile*> missileVec;
 	fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
+
+	for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
+		it->setTexture(groundTex, true);
+		it->setFillColor(Color::Green);
+	}
 
 	for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
 		it->setTexture("enemyshipsprite.png");
@@ -175,9 +194,11 @@ int main()
 			if (state == gameState::game) {
 				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::J) {
 					fillBulletVec(bulletVec, mySub);
+					shootSound.play();
 				}
 				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
 					fillMissileVec(missileVec, mySub);
+					shootSound.play();
 				}
 			}
 		}
@@ -201,8 +222,8 @@ int main()
 			window.draw(mainMenu.getMenuTitle());
 			window.draw(mainMenu.getPlayButton());
 			window.draw(mainMenu.getQuitButton());
-			cout << "menu title pos: " << mainMenu.getMenuTitle().getPosition().x << ", " << mainMenu.getMenuTitle().getPosition().y << endl;
-			cout << "view pos: " << position.x << ", " << position.y << endl;
+			//cout << "menu title pos: " << mainMenu.getMenuTitle().getPosition().x << ", " << mainMenu.getMenuTitle().getPosition().y << endl;
+			//cout << "view pos: " << position.x << ", " << position.y << endl;
 		}
 		if (state == gameState::game) {
 			
@@ -219,7 +240,7 @@ int main()
 				mySub.moveUp();
 			}
 			mySub.update();
-			cout << "sub pos is " << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
+			//cout << "sub pos is " << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
 
 			window.clear(Color::Black);
 			window.draw(background);
@@ -249,6 +270,7 @@ int main()
 						// sub lose one life and move ship up to center
 						lifeVec.pop_back();
 						mySub.resetSubPos();
+						hitSound.play();
 						//sleep(sf::seconds (1));
 						
 
@@ -277,6 +299,7 @@ int main()
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
 							score += 100;
+							hitSound.play();
 						}
 					}
 					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
@@ -285,6 +308,7 @@ int main()
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
 							score += 100;
+							hitSound.play();
 						}
 					}
 					if (itE->get_eShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
@@ -293,6 +317,7 @@ int main()
 						lifeVec.pop_back();
 						mySub.resetSubPos();
 						//sleep(sf::seconds(1));
+						hitSound.play();
 					}
 				}
 				if (itE->getNoDraw() == true) {
@@ -326,6 +351,7 @@ int main()
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
 							score += 500;
+							hitSound.play();
 						}
 					}
 					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
@@ -334,6 +360,7 @@ int main()
 							(*it)->setNoDraw();
 							// add score for hitting enemy ship
 							score += 500;
+							hitSound.play();
 						}
 					}
 					if (itBE->get_eBigShipSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
@@ -342,6 +369,7 @@ int main()
 						lifeVec.pop_back();
 						mySub.resetSubPos();
 						//sleep(sf::seconds(1));
+						hitSound.play();
 					}
 				}
 
@@ -364,6 +392,7 @@ int main()
 							itF->setNoDraw();
 							(*it)->setNoDraw();
 							mySub.addFuel();
+							hitSound.play();
 						}
 					}
 					for (vector<Missile*>::iterator it = missileVec.begin(); it != missileVec.end(); ++it) {
@@ -372,6 +401,7 @@ int main()
 							(*it)->setNoDraw();
 							mySub.addFuel();
 							// add score for hitting fuel
+							hitSound.play();
 						}
 					}
 					if (itF->getTankSprite().getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
@@ -379,6 +409,7 @@ int main()
 						// ..... maybe ship add a life if meele gas tank?
 						itF->setNoDraw();
 						mySub.resetSubPos();
+						hitSound.play();
 					}
 				}
 
@@ -482,8 +513,8 @@ int main()
 			window.draw(restartMenu.getRestartButton());
 			window.draw(restartMenu.getQuitButton());
 			
-			cout << "restart title pos: " << restartMenu.getRestartTitle().getPosition().x << ", " << restartMenu.getRestartTitle().getPosition().y << endl;
-			cout << "pos: " << position.x << ", " << position.y << endl;
+			//cout << "restart title pos: " << restartMenu.getRestartTitle().getPosition().x << ", " << restartMenu.getRestartTitle().getPosition().y << endl;
+			//cout << "pos: " << position.x << ", " << position.y << endl;
 		}
 		// put text stuff here
 
@@ -524,7 +555,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 
 	for (int i = 0; i < 400; i++) {
 		sf::RectangleShape groundrecttoadd;
-		groundrecttoadd.setSize(sf::Vector2f(128, 1));
+		groundrecttoadd.setSize(sf::Vector2f(128, 10));
 		groundrecttoadd.setPosition(sf::Vector2f(groundpos.x, groundpos.y));
 		groundrecttoadd.setFillColor(Color::Black);
 
