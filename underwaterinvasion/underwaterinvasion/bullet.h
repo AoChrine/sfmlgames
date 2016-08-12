@@ -8,7 +8,7 @@ private:
 	sf::Vector2f bulletPosition;
 	sf::Sprite bulletSprite;
 	sf::Texture bulletTexture;
-	float moveRightSpd = 2.0f;
+	float moveRightSpd = 7.0f;
 	float bulletLifeTime = 0.0f;
 	bool noDraw = false;
 public:

@@ -64,8 +64,8 @@ void Sub::changeFuelBarPosition(float x, float y)
 
 void Sub::resetSubPos()
 {
-	subPosition.y = 250;
-	subPosition.x -= 130;
+	subPosition.y = 200;
+	subPosition.x -= 200;
 }
 
 void Sub::hardResetPos()
@@ -128,6 +128,7 @@ void Sub::update()
 	}
 
 	if (subPosition.x < 0) {
+		subPosition.x = 0;
 		subPosition.x += subMoveSpd;
 	}
 
@@ -139,7 +140,7 @@ void Sub::update()
 		fuelBar.setSize(sf::Vector2f(400, 20));
 	}
 
-	fuelCount -= 0.1f;
+	fuelCount -= 0.2f;
 	fuelBar.setSize(sf::Vector2f(fuelCount, 20));
 
 	if (fuelBar.getSize().x > 200) {

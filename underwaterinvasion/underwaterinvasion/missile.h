@@ -8,7 +8,7 @@ private:
 	sf::Vector2f missilePosition;
 	sf::Sprite missileSprite;
 	sf::Texture missileTexture;
-	float moveDownSpd = 1.0f;
+	float moveDownSpd = 3.0f;
 	//float bulletLifeTime = 0.0f;
 	bool noDraw = false;
 public:

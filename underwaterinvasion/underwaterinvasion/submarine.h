@@ -13,8 +13,8 @@ private:
 	sf::RectangleShape fuelBar;
 	float fuelCount = 400.0f;
 	float subLifeCount = 3.0f;
-	float subRailSpd = 0.5f;
-	float subMoveSpd = 1.0f;
+	float subRailSpd = 2.0f;
+	float subMoveSpd = 3.0f;
 	
 public:
 

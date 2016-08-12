@@ -98,11 +98,7 @@ int main()
 	int score = 0;
 
 	String dieString = "Aw! You died. You noob.";
-	stringstream restartString;
-	restartString << "Well done. You win with " << score << " points!";
 
-	//Texture bulletTexture;
-	//if(!bulletTexture.loadFromFile("bullet.png")) return -1;
 
 	/*
 	Init obj. for game
@@ -208,6 +204,9 @@ int main()
 		labels.setPosition(position.x + 1300, position.y + 50);
 		labels.setString(scoreString.str());
 
+		stringstream restartString;
+		restartString << "Well done. You win with " << score << " points!";
+
 		//Game state to control Main Menu
 		if (state == gameState::mainMenu) {
 			if (mainMenu.getPlaySelected() == true && Keyboard::isKeyPressed(Keyboard::Space)) {
@@ -268,12 +267,11 @@ int main()
 					}
 					if (itG->getGlobalBounds().intersects(mySub.getSprite().getGlobalBounds())) {
 						// sub lose one life and move ship up to center
-						lifeVec.pop_back();
 						mySub.resetSubPos();
+						if (!lifeVec.empty()) {
+							lifeVec.pop_back();
+						}
 						hitSound.play();
-						//sleep(sf::seconds (1));
-						
-
 					}
 
 				}
@@ -461,6 +459,17 @@ int main()
 				mySub.hardResetPos();
 				state = gameState::restartMenu;
 			}
+			if (mySub.getFuelBar().getSize().x == 0) {
+				restartMenu.setString(dieString);
+				mySub.hardResetPos();
+				state = gameState::restartMenu;
+			}
+
+			if (mySub.getSprite().getPosition().x >= 12000) {
+				restartMenu.setString(restartString.str());
+				mySub.hardResetPos();
+				state = gameState::restartMenu;
+			}
 			// win condition sub goes past visible map
 
 		}
@@ -472,11 +481,13 @@ int main()
 			
 			if (restartMenu.getRestartSelected() == true && Keyboard::isKeyPressed(Keyboard::Space)) {
 				mySub.hardResetPos();
-				mySub.changeFuelBarPosition(400, 20);
-				score = 0;
-				for (vector<sf::CircleShape>::iterator it = lifeVec.begin(); it != lifeVec.end(); ++it) {
-					lifeVec.pop_back();
+				for (int i = 0; i < 6; i++) {
+					mySub.addFuel();
 				}
+				score = 0;
+				
+				lifeVec.clear();
+
 				lifeVec.push_back(lifeONE);
 				lifeVec.push_back(lifeTWO);
 				lifeVec.push_back(lifeTHREE);
@@ -488,6 +499,11 @@ int main()
 
 				fillGroundVector(groundVec);
 				fillObjectVec(groundVec, enemyShipVec, bigEnemyShipVec, fuelVec);
+
+				for (vector<sf::RectangleShape>::iterator it = groundVec.begin(); it != groundVec.end(); ++it) {
+					it->setTexture(groundTex, true);
+					it->setFillColor(Color::Green);
+				}
 
 				for (vector<enemyShip>::iterator it = enemyShipVec.begin(); it != enemyShipVec.end(); ++it) {
 					it->setTexture("enemyshipsprite.png");
@@ -532,7 +548,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 	//DEFINE MAX GROUND HEIGHT
 	sf::RectangleShape constraintRectTop(sf::Vector2f(30000, 10));
 	constraintRectTop.setFillColor(Color::White);
-	constraintRectTop.setPosition(sf::Vector2f(0, 500));
+	constraintRectTop.setPosition(sf::Vector2f(0, 300));
 
 	
 	//Define min ground height
