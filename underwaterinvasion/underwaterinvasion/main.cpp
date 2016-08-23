@@ -30,8 +30,8 @@ void fillBulletVec(vector<Bullet*> &bulletVec, Sub mySub);
 void fillMissileVec(vector<Missile*> &missileVec, Sub mySub);
 
 int main()
-{	
-	
+{
+
 	/*
 	Init window
 	*/
@@ -40,7 +40,7 @@ int main()
 	unsigned int windowHeight = 800;
 
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Scramble Game");
-	
+
 	/*
 	Setup game states
 	*/
@@ -85,8 +85,8 @@ int main()
 
 	Texture* groundTex = new sf::Texture;
 	groundTex->loadFromFile("ground.png");
-	
-	
+
+
 	Font font;
 	font.loadFromFile("font.ttf");
 
@@ -146,6 +146,8 @@ int main()
 	view.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
 	sf::Vector2f position(0, 0);
 
+	sf::Vector2f oldPosition(0, 0);
+
 	std::srand(1);
 	while (window.isOpen())
 	{
@@ -153,16 +155,21 @@ int main()
 		/*
 		Set up the scrolling view
 		*/
-		position.x = mySub.getSprite().getPosition().x - (windowWidth / 2);
-		position.y = mySub.getSprite().getPosition().y - (windowHeight / 2);
-		if (position.x < 0) {
-			position.x = 0;
+		//position.x = mySub.getSprite().getPosition().x - (windowWidth / 2);
+		//position.y = mySub.getSprite().getPosition().y - (windowHeight / 2);
+		if (state == gameState::game) {
+			position.x = oldPosition.x;
+			position.y = mySub.getSprite().getPosition().y - (windowHeight / 2);
+			position.x += 5.0f;
+			oldPosition.x = position.x;
+			if (position.x < 0) {
+				position.x = 0;
+			}
+			if (position.y < 0) {
+				position.y = 0;
+			}
 		}
-		if (position.y < 0) {
-			position.y = 0;
-		}
-
-		mySub.changeFuelBarPosition(position.x + (windowWidth / 2) - 200, position.y+ 50);
+		mySub.changeFuelBarPosition(position.x + (windowWidth / 2) - 200, position.y + 50);
 		background.setPosition(position.x, position.y);
 
 		if (lifeVec.size() == 3) {
@@ -180,12 +187,14 @@ int main()
 
 		view.reset(sf::FloatRect(position.x, position.y, (float)windowWidth, (float)windowHeight));
 		window.setView(view);
-		
+
 		// Close window
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
+				window.close();
+			if (Keyboard::isKeyPressed(Keyboard::Escape))
 				window.close();
 			if (state == gameState::game) {
 				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::J) {
@@ -198,7 +207,7 @@ int main()
 				}
 			}
 		}
-		
+
 		stringstream scoreString;
 		scoreString << "Score: " << score;
 		labels.setPosition(position.x + 1300, position.y + 50);
@@ -225,7 +234,7 @@ int main()
 			//cout << "view pos: " << position.x << ", " << position.y << endl;
 		}
 		if (state == gameState::game) {
-			
+
 			if (Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				mySub.moveRight();
 			}
@@ -239,6 +248,15 @@ int main()
 				mySub.moveUp();
 			}
 			mySub.update();
+			if (mySub.getSprite().getPosition().x < position.x) {
+				cout << "sub pos is smaller than pos" << endl;
+				mySub.changeSubPos(position.x, mySub.getSprite().getPosition().y);
+			}
+			if (mySub.getSprite().getPosition().x > position.x + windowWidth - 67) {
+				cout << "pos is " << position.x << endl;
+				cout << "sub pos is greater than pos" << endl;
+				mySub.changeSubPos(position.x + windowWidth - 67, mySub.getSprite().getPosition().y);
+			}
 			//cout << "sub pos is " << mySub.getSprite().getPosition().x << ", " << mySub.getSprite().getPosition().y << endl;
 
 			window.clear(Color::Black);
@@ -254,7 +272,7 @@ int main()
 
 			vector<sf::RectangleShape>::iterator itG = groundVec.begin();
 			while (itG != groundVec.end()) {
-				if (abs(itG->getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
+				if (abs(itG->getPosition().x - mySub.getSprite().getPosition().x) <= 2000) {
 					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
 						if (itG->getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
 							(*it)->setNoDraw();
@@ -275,12 +293,12 @@ int main()
 					}
 
 				}
-				if (itG->getPosition().x < mySub.getSprite().getPosition().x - 1200) {
+				if (itG->getPosition().x < mySub.getSprite().getPosition().x - 2000) {
 					itG = groundVec.erase(itG);
 				}
 				else {
 					//itBE->update();
-					
+
 					window.draw(*itG);
 					itG++;
 				}
@@ -289,7 +307,7 @@ int main()
 
 			vector<enemyShip>::iterator itE = enemyShipVec.begin();
 			while (itE != enemyShipVec.end()) {
-				if (abs(itE->getEShipPos().x - mySub.getSprite().getPosition().x) <= 1200) {
+				if (abs(itE->getEShipPos().x - mySub.getSprite().getPosition().x) <= 2000) {
 					// check collision with bullet and missile and if collide set nodraw
 					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
 						if (itE->get_eShipSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
@@ -341,7 +359,7 @@ int main()
 
 			vector<bigEnemyShip>::iterator itBE = bigEnemyShipVec.begin();
 			while (itBE != bigEnemyShipVec.end()) {
-				if (abs(itBE->get_eBigShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
+				if (abs(itBE->get_eBigShipSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 2000) {
 					// check collision with bullet and missile and if collide set nodraw
 					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
 						if (itBE->get_eBigShipSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
@@ -383,7 +401,7 @@ int main()
 
 			vector<fuelTank>::iterator itF = fuelVec.begin();
 			while (itF != fuelVec.end()) {
-				if (abs(itF->getTankSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 1200) {
+				if (abs(itF->getTankSprite().getPosition().x - mySub.getSprite().getPosition().x) <= 2000) {
 					// check collision with bullet and missile and if collide set nodraw
 					for (vector<Bullet*>::iterator it = bulletVec.begin(); it != bulletVec.end(); ++it) {
 						if (itF->getTankSprite().getGlobalBounds().intersects((*it)->getBulletSprite().getGlobalBounds())) {
@@ -427,11 +445,11 @@ int main()
 				if ((*it)->getNoDraw() == true) {
 					delete *it;
 					it = bulletVec.erase(it);
-					
+
 				}
 				else {
 					(*it)->update();
-					if ((*it)->getBulletSprite().getPosition().x > mySub.getSprite().getPosition().x + 1200) {
+					if ((*it)->getBulletSprite().getPosition().x > mySub.getSprite().getPosition().x + 2000) {
 						(*it)->setNoDraw();
 					}
 					window.draw((*it)->getBulletSprite());
@@ -447,13 +465,19 @@ int main()
 
 				}
 				else {
-					(*itM)->update();
+					if ((*itM)->getMissileSprite().getPosition().x < (mySub.getSprite().getPosition().x + 100) && 
+						(*itM)->getMissileSprite().getPosition().y < (mySub.getSprite().getPosition().y + 50)) {
+						(*itM)->rightUpdate();
+					}
+					else {
+						(*itM)->downUpdate();
+					}
 					// nodraw is collide wtih ground
 					window.draw((*itM)->getMissileSprite());
 					itM++;
 				}
 			}
-			
+
 			if (lifeVec.empty()) {
 				restartMenu.setString(dieString);
 				mySub.hardResetPos();
@@ -478,14 +502,14 @@ int main()
 			restartMenu.setQuitButtonPos(position.x + (windowWidth / 2) - 100, position.y + 300);
 			restartMenu.setRestartButtonPos(position.x + (windowWidth / 2) - 100, position.y + 200);
 			restartMenu.setRestartTitlePos(position.x + (windowWidth / 2) - 300, position.y + 50);
-			
+
 			if (restartMenu.getRestartSelected() == true && Keyboard::isKeyPressed(Keyboard::Space)) {
 				mySub.hardResetPos();
 				for (int i = 0; i < 6; i++) {
 					mySub.addFuel();
 				}
 				score = 0;
-				
+
 				lifeVec.clear();
 
 				lifeVec.push_back(lifeONE);
@@ -517,18 +541,18 @@ int main()
 
 				state = gameState::game;
 			}
-			if(restartMenu.getRestartSelected() == false && Keyboard::isKeyPressed(Keyboard::Space)) {
+			if (restartMenu.getRestartSelected() == false && Keyboard::isKeyPressed(Keyboard::Space)) {
 				window.close();
 
 			}
-			
+
 			restartMenu.restartUpdate();
 
 			window.clear(Color::Black);
 			window.draw(restartMenu.getRestartTitle());
 			window.draw(restartMenu.getRestartButton());
 			window.draw(restartMenu.getQuitButton());
-			
+
 			//cout << "restart title pos: " << restartMenu.getRestartTitle().getPosition().x << ", " << restartMenu.getRestartTitle().getPosition().y << endl;
 			//cout << "pos: " << position.x << ", " << position.y << endl;
 		}
@@ -544,19 +568,19 @@ int main()
 Function to fill vector with rects to draw the ground
 */
 void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
-	
+
 	//DEFINE MAX GROUND HEIGHT
 	sf::RectangleShape constraintRectTop(sf::Vector2f(30000, 10));
 	constraintRectTop.setFillColor(Color::White);
 	constraintRectTop.setPosition(sf::Vector2f(0, 300));
 
-	
+
 	//Define min ground height
 	sf::RectangleShape constraintRectBot(sf::Vector2f(30000, 10));
 	constraintRectBot.setFillColor(Color::White);
 	constraintRectBot.setPosition(sf::Vector2f(0, 700));
 
-	
+
 	// Variables to make the ground
 	float normOffset = 128.0f;
 	float smallOffSet = 128 * cosf(PI / 4);
@@ -577,7 +601,7 @@ void fillGroundVector(vector<sf::RectangleShape> &groundVec) {
 
 		int randnum = (rand() % 4); // rand num between 0 and 3
 
-		// Sets position for next rectangle if prev rec points down
+									// Sets position for next rectangle if prev rec points down
 		if (randnum == 0 && !hitbotconstraint) {
 			groundrecttoadd.rotate(45);
 			groundpos.x += smallOffSet;
@@ -653,18 +677,18 @@ void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip
 			}
 
 			if (randnum2 == 0 || randnum2 == 1 || randnum2 == 2) {
-				enemyShip eShip(recPosX+64, recPosY - 32);
+				enemyShip eShip(recPosX + 64, recPosY - 32);
 				enemyShipVec.push_back(eShip);
 			}
 			else if (randnum2 == 3) {
-				bigEnemyShip bigEShip(recPosX+64, recPosY - 64);
+				bigEnemyShip bigEShip(recPosX + 64, recPosY - 64);
 				bigEnemyShipVec.push_back(bigEShip);
 			}
 			else if (randnum2 == 4) {
-				fuelTank ftank(recPosX+64, recPosY - 32);
+				fuelTank ftank(recPosX + 64, recPosY - 32);
 				ftankVec.push_back(ftank);
 			}
-	
+
 
 		}
 	}
@@ -674,10 +698,10 @@ void fillObjectVec(const vector<sf::RectangleShape> &groundvec, vector<enemyShip
 Function to fill bulletList with bullet when we press J
 */
 void fillBulletVec(vector<Bullet*> &bulletVec, Sub mySub) {
-		float bulletPosX = mySub.getSprite().getPosition().x + 64;
-		float bulletPosY = mySub.getSprite().getPosition().y + 20;
-		Bullet* newBullet = new Bullet(bulletPosX, bulletPosY);
-		bulletVec.push_back(newBullet);
+	float bulletPosX = mySub.getSprite().getPosition().x + 64;
+	float bulletPosY = mySub.getSprite().getPosition().y + 20;
+	Bullet* newBullet = new Bullet(bulletPosX, bulletPosY);
+	bulletVec.push_back(newBullet);
 }
 
 

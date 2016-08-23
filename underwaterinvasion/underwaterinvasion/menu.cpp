@@ -5,26 +5,26 @@ Menu::Menu() {
 	
 	menuTitle.setPosition(Vector2f(600, 50));
 	menuTitle.setCharacterSize(50);
-	menuTitle.setColor(Color::Cyan);
+	menuTitle.setColor(sf::Color::Cyan);
 	menuTitle.setString("ScRaMbLe!");
 
 	//restartTitle.setPosition(Vector2f(350, 100));
 	restartTitle.setCharacterSize(40);
-	restartTitle.setColor(Color::Red);
+	restartTitle.setColor(sf::Color::Red);
 
 	playButton.setPosition(Vector2f(700, 200));
 	playButton.setCharacterSize(35);
-	playButton.setColor(Color::Yellow);
+	playButton.setColor(sf::Color::Yellow);
 	playButton.setString("Play");
 
 	//quitButton.setPosition(Vector2f(550, 300));
 	quitButton.setCharacterSize(35);
-	quitButton.setColor(Color::White);
+	quitButton.setColor(sf::Color::White);
 	quitButton.setString("Quit");
 
 	//restartButton.setPosition(Vector2f(550, 250));
 	restartButton.setCharacterSize(35);
-	restartButton.setColor(Color::Yellow);
+	restartButton.setColor(sf::Color::Yellow);
 	restartButton.setString("Restart");
 
 }
@@ -92,14 +92,14 @@ void Menu::update() {
 	quitButton.setPosition(quitButtonPos.x, quitButtonPos.y);
 	if (playSelected == true && Keyboard::isKeyPressed(Keyboard::Down)) {
 		playSelected = false;
-		quitButton.setColor(Color::Yellow);
-		playButton.setColor(Color::White);
+		quitButton.setColor(sf::Color::Yellow);
+		playButton.setColor(sf::Color::White);
 	}
 
 	if (playSelected == false && Keyboard::isKeyPressed(Keyboard::Up)) {
 		playSelected = true;
-		playButton.setColor(Color::Yellow);
-		quitButton.setColor(Color::White);
+		playButton.setColor(sf::Color::Yellow);
+		quitButton.setColor(sf::Color::White);
 	}
 }
 
@@ -110,14 +110,14 @@ void Menu::restartUpdate() {
 
 	if (restartSelected == true && Keyboard::isKeyPressed(Keyboard::Down)) {
 		restartSelected = false;
-		restartButton.setColor(Color::White);
-		quitButton.setColor(Color::Yellow);
+		restartButton.setColor(sf::Color::White);
+		quitButton.setColor(sf::Color::Yellow);
 	}
 
 	if (restartSelected == false && Keyboard::isKeyPressed(Keyboard::Up)) {
 		restartSelected = true;
-		restartButton.setColor(Color::Yellow);
-		quitButton.setColor(Color::White);
+		restartButton.setColor(sf::Color::Yellow);
+		quitButton.setColor(sf::Color::White);
 	}
 
 }

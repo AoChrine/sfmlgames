@@ -91,7 +91,7 @@ void Sub::moveDown()
 
 void Sub::moveLeft()
 {
-	subPosition.x -= subMoveSpd;
+	subPosition.x -= subLeftMoveSpd;
 }
 
 void Sub::moveRight()
@@ -112,6 +112,13 @@ void Sub::resetLife()
 void Sub::increaseFuel()
 {
 	fuelCount += 100.0f;
+}
+
+void Sub::changeSubPos(float x, float y)
+{
+	subPosition.x = x;
+	subPosition.y = y;
+	subSprite.setPosition(subPosition);
 }
 
 void Sub::setTexture(string fileloc)

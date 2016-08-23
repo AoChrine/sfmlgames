@@ -1,4 +1,35 @@
-﻿  submarine.cpp
-  main.cpp
+﻿  stdafx.cpp
+  submarine.cpp
+  missile.cpp
+  menu.cpp
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(8): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(13): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(17): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(22): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(27): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(95): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(96): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(101): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(102): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(113): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(114): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(119): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+c:\users\aou\desktop\sfmlgames\sfmlgames\underwaterinvasion\underwaterinvasion\menu.cpp(120): error C4996: 'sf::Text::setColor': was declared deprecated
+  c:\users\aou\desktop\sfml-2.4.0\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
+  fueltank.cpp
+  enemyship.cpp
+  bullet.cpp
+  bigenemyship.cpp
   Generating Code...
-  underwaterinvasion.vcxproj -> C:\Users\aou\Documents\Visual Studio 2015\Projects\sfmlgames\underwaterinvasion\Debug\underwaterinvasion.exe

@@ -13,9 +13,10 @@ private:
 	sf::RectangleShape fuelBar;
 	float fuelCount = 400.0f;
 	float subLifeCount = 3.0f;
-	float subRailSpd = 2.0f;
-	float subMoveSpd = 3.0f;
-	
+	float subRailSpd = 9.0f;
+	float subMoveSpd = 20.0f;
+	float subLeftMoveSpd = 9.0f;
+
 public:
 
 	Sub(float x, float y);
@@ -39,6 +40,7 @@ public:
 	void decreaseLife();
 	void resetLife();
 	void increaseFuel();
+	void changeSubPos(float x, float y);
 	void setTexture(string fileloc);
 
 	void update();
